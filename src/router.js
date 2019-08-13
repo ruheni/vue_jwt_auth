@@ -1,8 +1,24 @@
 import Vue from "vue";
 import Router from "vue-router";
+import store from "./store";
 import Home from "./views/Home.vue";
+import Register from "./components/auth/Register.vue";
+import Login from "./components/auth/Login.vue";
+import Resource from "./components/resources/Resource.vue";
 
 Vue.use(Router);
+
+Router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
+});
 
 export default new Router({
   mode: "history",
@@ -21,6 +37,24 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "about" */ "./views/About.vue")
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: Register
+    },
+    {
+      path: "/resources",
+      name: "resources",
+      component: Resource,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });
