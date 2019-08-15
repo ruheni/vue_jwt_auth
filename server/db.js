@@ -18,7 +18,7 @@ class Db {
     return this.db.run(sql);
   }
 
-  selectByemail(email, callback) {
+  selectByEmail(email, callback) {
     return this.db.get(
       `SELECT * FROM userAuth WHERE email = ?`,
       [email],

@@ -7,12 +7,12 @@
  */
 "use strict";
 
-import express from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import bodyParser from "body-parser";
-import DB from "./db";
-import config from "./config";
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const DB = require("./db");
+const config = require("./config");
 
 const db = new DB("sqlitedb");
 const app = express();
@@ -33,23 +33,23 @@ app.use(enableCrossDomain);
 app.use(router);
 
 // define auth routes
-router.post("/register", (req, res) => {
+router.post("/register", function(req, res) {
   db.insert(
     [req.body.name, req.body.email, bcrypt.hashSync(req.body.password, 8)],
     function(err) {
       if (err) {
+        console.log(err);
         return res
           .status(500)
           .send("There was a problem registering the user.");
       }
       db.selectByEmail(req.body.email, (err, user) => {
-        if (err) {
-          return res.status(500).send("There was a problem getting the user.");
-        }
+        if (err)
+          return res.status(500).send("There was a problem getting user");
         let token = jwt.sign({ id: user.id }, config.secret, {
-          expiresIn: 86400 // 24hrs
+          expiresIn: 86400 // expires in 24 hours
         });
-        res.status(200).send({ auth: true, token, user });
+        res.status(200).send({ auth: true, token: token, user: user });
       });
     }
   );

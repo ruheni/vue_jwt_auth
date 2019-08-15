@@ -1,21 +1,16 @@
 <template>
-	<div class="container">
-		<b-form @submit.prevent="login" v-if="show" autocomplete="off">
+	<div>
+		<form class="login" @submit.prevent="login">
 			<h1>Sign in</h1>
-			<b-form-group id="email" label="Email address:" label-for="email">
-				<b-form-input id="email" v-model="email" type="email" required placeholder="Enter your email"></b-form-input>
-			</b-form-group>
-			<b-form-group id="password" label="Password:" label-for="password">
-				<b-form-input
-					id="password"
-					v-model="password"
-					type="password"
-					required
-					placeholder="Enter your password"
-				></b-form-input>
-			</b-form-group>
-			<b-button type="submit" variant="primary">Login</b-button>
-		</b-form>
+			<label>Email</label>
+			<input required v-model="email" type="email" placeholder="Name" />
+			<br/>
+			<label>Password</label>
+			<input required v-model="password" type="password" placeholder="Password" />
+			<hr />
+			<p>Don't have an account? <router-link to="/register">Register here</router-link></p>
+			<button type="submit">Login</button>
+		</form>
 	</div>
 </template>
 <script>
@@ -27,10 +22,10 @@ export default {
 		};
 	},
 	methods: {
-		async login() {
+		login() {
 			let email = this.email;
 			let password = this.password;
-			await this.$store
+			this.$store
 				.dispatch("login", { email, password })
 				.then(() => this.$router.push("/"))
 				.catch(err => console.log(err));

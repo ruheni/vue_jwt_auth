@@ -4,23 +4,11 @@ import store from "./store";
 import Home from "./views/Home.vue";
 import Register from "./components/auth/Register.vue";
 import Login from "./components/auth/Login.vue";
-import Resource from "./components/resources/Resource.vue";
+import Resource from "./components/resources/Resources.vue";
 
 Vue.use(Router);
 
-Router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
-      next();
-      return;
-    }
-    next("/login");
-  } else {
-    next();
-  }
-});
-
-export default new Router({
+let router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -58,3 +46,16 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.isLoggedIn) {
+      next();
+      return;
+    }
+    next("/login");
+  } else {
+    next();
+  }
+});
+export default router;

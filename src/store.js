@@ -14,7 +14,7 @@ export default new Vuex.Store({
     auth_request(state) {
       state.status = "loading";
     },
-    auth_successs(state, token, user) {
+    auth_success(state, token, user) {
       state.status = "success";
       state.user = user;
       state.token = token;
@@ -28,12 +28,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    login({ commit }) {
+    login({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit("auth_request");
         axios({
           url: "http://localhost:3000/login",
-          data: this.state.user,
+          data: user,
           method: "POST"
         })
           .then(res => {
@@ -57,6 +57,29 @@ export default new Vuex.Store({
         localStorage.removeItem("token");
         delete axios.defaults.headers.common["Authorization"];
         resolve();
+      });
+    },
+    register({ commit }, user) {
+      return new Promise((resolve, reject) => {
+        commit("auth_request");
+        axios({
+          url: "https://localhost:3000/register",
+          data: user,
+          method: "POST"
+        })
+          .then(res => {
+            const token = res.data.token;
+            const user = res.data.user;
+            localStorage.setItem("token", token);
+            axios.defaults.headers.common["Authorization"] = token;
+            commit("auth_success", token, user);
+            resolve(res);
+          })
+          .catch(err => {
+            commit("auth_error", err);
+            localStorage.removeItem("token");
+            reject(err);
+          });
       });
     }
   },
