@@ -47,7 +47,7 @@ export default {
 			};
 			this.$store
 				.dispatch("register", data)
-				.then(() => this.router.push("/"))
+				.then(() => this.$router.push("/"))
 				.catch(err => console.log(err));
 		}
 	}

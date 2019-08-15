@@ -51,19 +51,11 @@ export default new Vuex.Store({
           });
       });
     },
-    logout({ commit }) {
-      return new Promise((resolve, reject) => {
-        commit("logout");
-        localStorage.removeItem("token");
-        delete axios.defaults.headers.common["Authorization"];
-        resolve();
-      });
-    },
     register({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit("auth_request");
         axios({
-          url: "https://localhost:3000/register",
+          url: "http://localhost:3000/register",
           data: user,
           method: "POST"
         })
@@ -80,6 +72,14 @@ export default new Vuex.Store({
             localStorage.removeItem("token");
             reject(err);
           });
+      });
+    },
+    logout({ commit }) {
+      return new Promise((resolve, reject) => {
+        commit("logout");
+        localStorage.removeItem("token");
+        delete axios.defaults.headers.common["Authorization"];
+        resolve();
       });
     }
   },
